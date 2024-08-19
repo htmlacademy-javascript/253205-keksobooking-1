@@ -28,20 +28,20 @@ const createCounter = () => {
   };
 };
 
-const getGuests = (array, number) => {
-  if (number === 1) {
-    return `${array[0]}`;
-  }
-  return `${array[1]}`;
-};
+const getGuests = (guests, number) => number === 1 ? guests[0] : guests[1];
 
-const getRooms = (array, number) => {
+const getRooms = (rooms, number) => {
   if (number === 1) {
-    return `${array[0]}`;
+    return rooms[0];
   } else if (1 < number && number <= 4) {
-    return `${array[1]}`;
+    return rooms[1];
   }
-  return `${array[2]}`;
+  return rooms[2];
 };
 
-export {getRandomInteger, getRandomFloatNumber, getRandomArrayElement, getRandomShuffleArray, createCounter, getGuests, getRooms};
+const toggleFormStatus = (elementParentClass, elementTag, status) => {
+  const formElements = elementParentClass.querySelectorAll(elementTag);
+  formElements.forEach((element) => status ? element.setAttribute('disabled','') : element.removeAttribute('disabled'));
+};
+
+export {getRandomInteger, getRandomFloatNumber, getRandomArrayElement, getRandomShuffleArray, createCounter, getGuests, getRooms, toggleFormStatus};

@@ -1,8 +1,5 @@
-import {createAddress} from './data.js';
 import {getRooms, getGuests} from './util.js';
 import {ROOMS, GUESTS} from './constants.js';
-
-const mockAdress = createAddress();
 
 const cardTemplate = document.querySelector('#card').content;
 
@@ -22,35 +19,45 @@ const createTemplate = (object) => {
 
   element.querySelector('.popup__text--time').textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
 
-  const featuresListFragment = document.createDocumentFragment();
-  features.forEach((featureItem) => {
-    const featuresListItem = element.querySelector(`.popup__feature--${featureItem}`);
-    if(featuresListItem) {
-      featuresListFragment.append(featuresListItem);
-    }
-  });
-  element.querySelector('.popup__features').innerHTML = '';
-  element.querySelector('.popup__features').append(featuresListFragment);
+  const featuresList = element.querySelector('.popup__features');
+  if (features) {
+    const featuresListFragment = document.createDocumentFragment();
+    features.forEach((featureItem) => {
+      const featuresListItem = element.querySelector(`.popup__feature--${featureItem}`);
+      if(featuresListItem) {
+        featuresListFragment.append(featuresListItem);
+      }
+    });
+    element.querySelector('.popup__features').innerHTML = '';
+    element.querySelector('.popup__features').append(featuresListFragment);
+  } else {
+    featuresList.remove();
+  }
 
   const popupPhotos = element.querySelector('.popup__photos');
   const popupPhoto = popupPhotos.querySelector('img');
-
-  for (let i = 0; i < object.offer.photos.length; i++) {
-    if(i > 0) {
-      const newElement = popupPhoto.cloneNode(true);
-      popupPhotos.appendChild(newElement);
+  if (object.offer.photos) {
+    for (let i = 0; i < object.offer.photos.length; i++) {
+      if(i > 0) {
+        const newElement = popupPhoto.cloneNode(true);
+        popupPhotos.appendChild(newElement);
+      }
+      const popupPhotoList = popupPhotos.querySelectorAll('img');
+      popupPhotoList[i].src = object.offer.photos[i];
     }
-    const popupPhotoList = popupPhotos.querySelectorAll('img');
-    popupPhotoList[i].src = object.offer.photos[i];
+  } else {
+    popupPhotos.remove();
   }
 
-  element.querySelector('.popup__description').textContent = object.offer.description;
+  const description = element.querySelector('.popup__description');
+  if (object.offer.description) {
+    description.textContent = object.offer.description;
+  } else {
+    description.remove();
+  }
 
   element.querySelector('.popup__avatar').src = avatar;
 
   return element;
 };
-
-const template = createTemplate(mockAdress);
-
-export {template, createTemplate};
+export {createTemplate};

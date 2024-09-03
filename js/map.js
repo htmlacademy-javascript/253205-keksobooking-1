@@ -1,6 +1,6 @@
-import {onMapLoad} from './form.js';
+import {toggleFormStatus} from './util.js';
 import {createTemplate} from './create-element.js';
-import {similiarAnnounce} from './data.js';
+import {getData} from './api.js';
 
 const MAIN_ICON_SIZE = [52, 52];
 const MAIN_ICON_ANCHOR = [26, 52];
@@ -14,8 +14,14 @@ const MAP_CENTER = {
 };
 const MAP_LAYER = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-const announces = similiarAnnounce();
 const adressInput = document.querySelector('#address');
+
+const onMapLoad = () => {
+  document.querySelector('.ad-form').classList.remove('ad-form--disabled');
+  toggleFormStatus(document.querySelector('.map__filters'), 'select');
+  toggleFormStatus(document.querySelector('.map__filters'), 'fieldset');
+  toggleFormStatus(document.querySelector('.ad-form'), 'fieldset');
+};
 
 const map = L.map('map-canvas').on('load', onMapLoad).setView(MAP_CENTER , 10);
 
@@ -34,7 +40,7 @@ const markerMain = L.marker(MAP_CENTER,
   });
 markerMain.addTo(map);
 
-adressInput.value = `${MAP_CENTER.lat},  ${MAP_CENTER.lng}`;
+adressInput.setAttribute('value', `${MAP_CENTER.lat},  ${MAP_CENTER.lng}`);
 
 const onIconMove = (evt) => {
   const iconPosition = evt.target.getLatLng();
@@ -61,4 +67,8 @@ const addMarkers = (element) => {
   marker.addTo(map).bindPopup(createTemplate(element));
 };
 
-announces.forEach(addMarkers);
+getData().then((data) => {
+  data.forEach(addMarkers);
+});
+
+export {markerMain, MAP_CENTER, adressInput};
